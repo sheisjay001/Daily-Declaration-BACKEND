@@ -7,6 +7,7 @@ import categoryRoutes from './routes/categories.js';
 import authorRoutes from './routes/authors.js';
 import subscriberRoutes from './routes/subscribers.js';
 import uploadRoutes from './routes/upload.js';
+import { migrate } from './db/migrate.js';
 
 dotenv.config();
 
@@ -30,6 +31,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Run migrations on startup
+migrate().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}).catch((error) => {
+  console.error('Migration failed, server not starting:', error);
+  process.exit(1);
 });
