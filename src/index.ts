@@ -11,6 +11,10 @@ import { migrate } from './db/migrate.js';
 
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  console.error('JWT_SECRET is not set. CMS login and registration will fail with a 500 error until it is configured.');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 

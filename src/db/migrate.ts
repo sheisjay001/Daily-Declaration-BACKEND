@@ -44,8 +44,8 @@ async function migrate() {
     // Insert default author
     await pool.query(`
       INSERT INTO authors (name, role, bio) 
-      VALUES ('Daily Declarations Team', 'Editor', 'Bringing positive affirmations to your daily life.')
-      ON CONFLICT DO NOTHING
+      SELECT 'Daily Declarations Team', 'Editor', 'Bringing positive affirmations to your daily life.'
+      WHERE NOT EXISTS (SELECT 1 FROM authors WHERE name = 'Daily Declarations Team')
     `);
     
     console.log('Default author inserted!');
