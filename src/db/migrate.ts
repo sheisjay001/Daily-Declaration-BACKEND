@@ -16,7 +16,7 @@ async function migrate() {
 
   try {
     console.log('Connecting to database...');
-    await pool.connect();
+    await pool.query('SELECT 1');
     
     console.log('Reading schema file...');
     const schema = readFileSync(join(__dirname, 'schema.sql'), 'utf-8');
