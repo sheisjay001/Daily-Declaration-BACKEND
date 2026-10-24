@@ -2,6 +2,7 @@ import pg from 'pg';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import bcrypt from 'bcrypt';
 
 const { Pool } = pg;
 
@@ -48,6 +49,16 @@ async function migrate() {
     `);
     
     console.log('Default author inserted!');
+    
+    // Insert default admin user
+    const passwordHash = await bcrypt.hash('admin123', 10);
+    await pool.query(`
+      INSERT INTO users (email, password_hash) 
+      VALUES ('admin@dailydeclarations.com', $1)
+      ON CONFLICT (email) DO NOTHING
+    `, [passwordHash]);
+    
+    console.log('Default admin user inserted! Email: admin@dailydeclarations.com, Password: admin123');
     
   } catch (error) {
     console.error('Migration failed:', error);
