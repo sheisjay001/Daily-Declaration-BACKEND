@@ -46,14 +46,6 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Indexes for better query performance
-CREATE INDEX IF NOT EXISTS idx_affirmations_slug ON affirmations(slug);
-CREATE INDEX IF NOT EXISTS idx_affirmations_category ON affirmations(category_id);
-CREATE INDEX IF NOT EXISTS idx_affirmations_published ON affirmations(is_published);
-CREATE INDEX IF NOT EXISTS idx_affirmations_scheduled ON affirmations(scheduled_at);
-CREATE INDEX IF NOT EXISTS idx_affirmations_created ON affirmations(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
-
 -- Add scheduled_at column if it doesn't exist (for existing databases)
 DO $$
 BEGIN
@@ -64,3 +56,11 @@ BEGIN
     ALTER TABLE affirmations ADD COLUMN scheduled_at TIMESTAMP;
   END IF;
 END $$;
+
+-- Indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_affirmations_slug ON affirmations(slug);
+CREATE INDEX IF NOT EXISTS idx_affirmations_category ON affirmations(category_id);
+CREATE INDEX IF NOT EXISTS idx_affirmations_published ON affirmations(is_published);
+CREATE INDEX IF NOT EXISTS idx_affirmations_scheduled ON affirmations(scheduled_at);
+CREATE INDEX IF NOT EXISTS idx_affirmations_created ON affirmations(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
