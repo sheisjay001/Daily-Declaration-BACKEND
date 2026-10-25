@@ -7,6 +7,7 @@ import categoryRoutes from './routes/categories.js';
 import authorRoutes from './routes/authors.js';
 import subscriberRoutes from './routes/subscribers.js';
 import uploadRoutes from './routes/upload.js';
+import webhookRoutes from './routes/webhook.js';
 import { migrate } from './db/migrate.js';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/authors', authorRoutes);
 app.use('/api/subscribe', subscriberRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/webhook', webhookRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
