@@ -104,13 +104,13 @@ router.get('/:slug', async (req, res) => {
 // Create affirmation (CMS)
 router.post('/', authenticate, async (req: AuthRequest, res) => {
   try {
-    const { title, slug, excerpt, content, category_id, author_id, cover_image, is_published } = req.body;
+    const { title, slug, excerpt, content, category_id, author_id, cover_image, is_published, scheduled_at } = req.body;
     
     const result = await pool.query(
-      `INSERT INTO affirmations (title, slug, excerpt, content, category_id, author_id, cover_image, is_published)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO affirmations (title, slug, excerpt, content, category_id, author_id, cover_image, is_published, scheduled_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [title, slug, excerpt, content, category_id, author_id, cover_image, is_published]
+      [title, slug, excerpt, content, category_id, author_id, cover_image, is_published, scheduled_at]
     );
     
     res.status(201).json(result.rows[0]);
@@ -126,15 +126,15 @@ router.post('/', authenticate, async (req: AuthRequest, res) => {
 router.put('/:id', authenticate, async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const { title, slug, excerpt, content, category_id, author_id, cover_image, is_published } = req.body;
+    const { title, slug, excerpt, content, category_id, author_id, cover_image, is_published, scheduled_at } = req.body;
     
     const result = await pool.query(
       `UPDATE affirmations 
        SET title = $1, slug = $2, excerpt = $3, content = $4, 
-           category_id = $5, author_id = $6, cover_image = $7, is_published = $8, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $9
+           category_id = $5, author_id = $6, cover_image = $7, is_published = $8, scheduled_at = $9, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $10
        RETURNING *`,
-      [title, slug, excerpt, content, category_id, author_id, cover_image, is_published, id]
+      [title, slug, excerpt, content, category_id, author_id, cover_image, is_published, scheduled_at, id]
     );
     
     if (result.rows.length === 0) {

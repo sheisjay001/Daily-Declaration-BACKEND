@@ -9,6 +9,7 @@ import subscriberRoutes from './routes/subscribers.js';
 import uploadRoutes from './routes/upload.js';
 import webhookRoutes from './routes/webhook.js';
 import { migrate } from './db/migrate.js';
+import { startScheduler } from './jobs/scheduler.js';
 
 dotenv.config();
 
@@ -39,6 +40,9 @@ app.get('/health', (req, res) => {
 
 // Run migrations on startup
 migrate().then(() => {
+  // Start the post scheduler
+  startScheduler();
+  
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });

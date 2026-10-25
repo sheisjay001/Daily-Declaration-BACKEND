@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS affirmations (
   author_id INTEGER REFERENCES authors(id) ON DELETE SET NULL,
   cover_image TEXT,
   is_published BOOLEAN DEFAULT false,
+  scheduled_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -49,5 +50,17 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX IF NOT EXISTS idx_affirmations_slug ON affirmations(slug);
 CREATE INDEX IF NOT EXISTS idx_affirmations_category ON affirmations(category_id);
 CREATE INDEX IF NOT EXISTS idx_affirmations_published ON affirmations(is_published);
+CREATE INDEX IF NOT EXISTS idx_affirmations_scheduled ON affirmations(scheduled_at);
 CREATE INDEX IF NOT EXISTS idx_affirmations_created ON affirmations(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
+
+-- Add scheduled_at column if it doesn't exist (for existing databases)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'affirmations' AND column_name = 'scheduled_at'
+  ) THEN
+    ALTER TABLE affirmations ADD COLUMN scheduled_at TIMESTAMP;
+  END IF;
+END $$;
